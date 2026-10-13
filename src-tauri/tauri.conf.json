@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "PlainMarkdown",
+  "version": "0.1.0",
+  "identifier": "com.studio13.plainmarkdown",
+  "build": {"beforeDevCommand":"npm run dev","devUrl":"http://127.0.0.1:1420","beforeBuildCommand":"npm run build","frontendDist":"../dist"},
+  "app": {
+    "windows": [{"title":"PlainMarkdown","width":1060,"height":820,"minWidth":620,"minHeight":420,"backgroundColor":"#faf9f6"}],
+    "security": {"csp":"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src ipc: http://ipc.localhost; font-src 'self' data:; object-src 'none'; base-uri 'none'; frame-src 'none'"}
+  },
+  "bundle": {"active":true,"targets":["nsis"],"shortDescription":"Markdown, simply.","icon":["icons/icon.ico"],"fileAssociations":[{"ext":["md","markdown"],"name":"Markdown document","description":"Markdown document","role":"Editor"}],"windows":{"nsis":{"displayLanguageSelector":false,"installMode":"currentUser"}}}
+}

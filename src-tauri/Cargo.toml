@@ -1,0 +1,21 @@
+[package]
+name = "plainmarkdown"
+version = "0.1.0"
+description = "A quiet Markdown editor for Windows"
+authors = ["Studio13"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+rfd = "0.17"
+tempfile = "3"
+base64 = "0.22"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
