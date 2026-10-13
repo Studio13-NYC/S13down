@@ -4,7 +4,7 @@ Inspected October 13, 2026. Purpose: understand the supplied Typora installer we
 
 **Recommendation:** build a small independent application with Tauri 2, Milkdown rendered editing, and a CodeMirror 6 source view. Keep a single document window and one clearly labeled **Rendered / Source** switch. The main engineering work is preserving the document and making switching, undo, and saving predictable.
 
-[Read the proposed build plan](C:/Users/NickKatsivelos/Downloads/typora-analysis/BUILD-PLAN.md).
+[Read the proposed build plan](DESIGN.md).
 
 ## What was actually inspected
 

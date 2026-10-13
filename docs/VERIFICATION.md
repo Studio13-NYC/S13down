@@ -2,7 +2,7 @@
 
 ## Naming update
 
-The user requested **S13down.exe**. The app's display name, window title, Windows executable metadata and installer were renamed to S13down, then rebuilt successfully. Current review artifacts are `builds\S13down.exe` and `builds\S13down_0.1.0_x64-setup.exe`. The project directory, application identifier and draft-storage keys remain stable. Earlier PlainMarkdown artifacts and verification results below are retained as the initial build record.
+The user requested **S13down.exe**. The app's display name, window title, Windows executable metadata and installer were renamed to S13down, then rebuilt successfully. Current review artifacts are `builds\S13down.exe` and `builds\S13down_0.1.0_x64-setup.exe`. The whole project was subsequently moved to `D:\Studio13\Lab\Code\S13down`. The application identifier and draft-storage keys remain stable. Earlier PlainMarkdown artifacts and verification results below are retained as the initial build record.
 
 ## Toolchain
 

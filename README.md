@@ -40,7 +40,7 @@ Supports headings, paragraphs, lists, tasks, block quotes, links, fenced code, t
 Prerequisites: Node/npm, Rust stable MSVC, Visual Studio C++ build tools and WebView2. Rust was installed user-wide with rustup in `C:\Users\NickKatsivelos\.cargo`; restart an existing terminal to pick up its PATH entry.
 
 ```powershell
-Set-Location 'D:\Studio13\Lab\Code\PlainMarkdown'
+Set-Location 'D:\Studio13\Lab\Code\S13down'
 npm ci
 npm test
 npm run test:ui
