@@ -17,7 +17,7 @@ import './style.css';
 const native = isTauri();
 const welcome = '# A little room to think.\n\nA plain file. A clear page. Just start writing.\n\n## Make yourself at home\n\nClick any text to edit it. Use **Ctrl+B** for bold and **Ctrl+I** for italic. Markdown shortcuts work as you type.\n\n- Open a document with **Ctrl+O**\n- Save your work with **Ctrl+S**\n- Switch to Markdown source with **Ctrl+/**\n\n> Everything stays in ordinary Markdown files, on your computer.\n\nTry the **Source** switch above to see the text behind this page.\n';
 document.querySelector('#app')!.innerHTML = `
-  <header><div class="identity"><span class="app-mark" aria-hidden="true">M</span><div><div id="filename">Untitled.md</div><div id="file-state">PlainMarkdown</div></div></div>
+  <header><div class="identity"><span class="app-mark" aria-hidden="true">M</span><div><div id="filename">Untitled.md</div><div id="file-state">S13down</div></div></div>
   <div class="modes" role="group" aria-label="Editing mode"><button id="rendered" aria-pressed="true">Rendered</button><button id="source" aria-pressed="false">Source</button></div>
   <div class="actions"><button id="open" title="Open (Ctrl+O)">Open</button><button id="save" title="Save (Ctrl+S)">Save</button><button id="more" title="More options" aria-label="More options" aria-expanded="false">···</button></div></header>
   <div id="menu" hidden><button data-action="new">New document <kbd>Ctrl+N</kbd></button><button data-action="saveas">Save as… <kbd>Ctrl+Shift+S</kbd></button><button data-action="find">Find in source <kbd>Ctrl+F</kbd></button><hr><button data-action="zoomin">Larger text <kbd>Ctrl++</kbd></button><button data-action="zoomout">Smaller text <kbd>Ctrl+−</kbd></button><button data-action="zoomreset">Reset text size <kbd>Ctrl+0</kbd></button></div>
@@ -52,11 +52,11 @@ function update() {
   const name = path.split(/[\\/]/).pop() || 'Untitled.md';
   el('filename').textContent = `${doc.dirty ? '• ' : ''}${name}`;
   el('filename').title = path || 'New document';
-  el('file-state').textContent = doc.dirty ? 'Unsaved changes' : path ? 'Saved on your computer' : 'PlainMarkdown';
+  el('file-state').textContent = doc.dirty ? 'Unsaved changes' : path ? 'Saved on your computer' : 'S13down';
   el('word-count').textContent = `${doc.text.trim() ? doc.text.trim().split(/\s+/).length : 0} words`;
   el('rendered').setAttribute('aria-pressed',String(mode === 'rendered'));
   el('source').setAttribute('aria-pressed',String(mode === 'source'));
-  if (native) void getCurrentWindow().setTitle(`${doc.dirty ? '• ' : ''}${name} — PlainMarkdown`).catch(console.error);
+  if (native) void getCurrentWindow().setTitle(`${doc.dirty ? '• ' : ''}${name} — S13down`).catch(console.error);
 }
 function recoverable() {
   try {

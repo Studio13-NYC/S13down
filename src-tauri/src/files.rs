@@ -14,7 +14,7 @@ impl FileDocument {
     }
     pub fn save(&mut self, text: &str) -> Result<(), String> {
         let current = fs::read(&self.path).map_err(|e| format!("Cannot verify the file on disk: {e}. Use Save As to save a copy."))?;
-        if current != self.bytes { return Err("This file changed outside PlainMarkdown. Use Save As to keep your edits in a separate copy, or reopen the file.".into()); }
+        if current != self.bytes { return Err("This file changed outside S13down. Use Save As to keep your edits in a separate copy, or reopen the file.".into()); }
         let bytes = encoded(text, self.bom);
         if bytes == current { return Ok(()); }
         atomic_write(&self.path, &bytes)?;

@@ -1,13 +1,13 @@
-# PlainMarkdown
+# S13down
 
 A small Windows Markdown editor. Documents open rendered and editable; **Rendered / Source** switches to editable Markdown. One document per window, ordinary files, no account or library.
 
 ## Try the prototype
 
-- Run `builds\PlainMarkdown.exe` directly, or install `builds\PlainMarkdown_0.1.0_x64-setup.exe`.
+- Run `builds\S13down.exe` directly, or install `builds\S13down_0.1.0_x64-setup.exe`.
 - Requires Windows with Microsoft Edge WebView2. The installer can bootstrap WebView2 if it is missing.
-- To make it your default: install, then right-click an `.md` file → **Open with** → **Choose another app** → **PlainMarkdown** → **Always**. Installation registers `.md` and `.markdown`; the app does not change your default automatically.
-- You can also pass a filename: `& .\builds\PlainMarkdown.exe 'D:\Notes\My document.md'`.
+- To make it your default: install, then right-click an `.md` file → **Open with** → **Choose another app** → **S13down** → **Always**. Installation registers `.md` and `.markdown`; the app does not change your default automatically.
+- You can also pass a filename: `& .\builds\S13down.exe 'D:\Notes\My document.md'`.
 - This is a locally built, unsigned prototype. Installer/default-app registration still needs a user installation check.
 
 ## Controls
@@ -49,7 +49,7 @@ npm run tauri -- dev
 npm run tauri -- build
 ```
 
-Build output: `src-tauri\target\release\plainmarkdown.exe` and `src-tauri\target\release\bundle\nsis\PlainMarkdown_0.1.0_x64-setup.exe`. `builds` contains review copies of those artifacts. Tests use fixture copies, not personal documents. UI tests use installed Edge.
+Build output: `src-tauri\target\release\S13down.exe` and `src-tauri\target\release\bundle\nsis\S13down_0.1.0_x64-setup.exe`. `builds` contains review copies of those artifacts. Tests use fixture copies, not personal documents. UI tests use installed Edge.
 
 Stack: Tauri 2, TypeScript/Vite, Milkdown Crepe, CodeMirror 6. The implementation is independent of Typora code. See `docs/DESIGN.md` for the original direction and `docs/IMPLEMENTATION.md` for decisions.
 

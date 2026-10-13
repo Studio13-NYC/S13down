@@ -80,5 +80,5 @@ fn resolve_image(state: tauri::State<'_, AppState>, url: String) -> Result<Strin
 fn main() {
     tauri::Builder::default().manage(AppState::default())
         .invoke_handler(tauri::generate_handler![open_document,new_document,save_document,resolve_image])
-        .run(tauri::generate_context!()).expect("Could not start PlainMarkdown");
+        .run(tauri::generate_context!()).expect("Could not start S13down");
 }
