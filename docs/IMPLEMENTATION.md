@@ -22,6 +22,6 @@ Fresh-context review found three issues: temporary image URLs from the editor's 
 Image uploads now embed durable data URLs (2 MB cap); local relative image links are also supported. Source editing sets CodeMirror's line separator and uses sliceDoc. Editor/search focus is restored after clearing inert. Approximate per-mode cursor offsets are retained.
 
 Ruling: broad Windows/IME/accessibility/performance qualification remains a follow-up to the user's requested direction-review prototype; report these limits instead of claiming production readiness.
-Ruling: keep this fresh local codex/prototype branch in place for user review. There is no parent branch or remote to merge/push to; a branch-integration approval menu does not apply to this new project.
+Ruling: the initial prototype was kept locally on codex/prototype for user review. At the user's subsequent request, the complete project directory moved to `D:\Studio13\Lab\Code\S13down`, the branch was renamed to `main`, and its source/history were pushed to the private `Studio13-NYC/S13down` repository. Generated dependencies, caches and local build artifacts remain outside Git.
 
 No Typora source was copied into the application.
