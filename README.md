@@ -1,6 +1,7 @@
 # S13down
-
-A small Windows Markdown editor. Documents open rendered and editable; **Rendered / Source** switches to editable Markdown. One document per window, ordinary files, no account or library.
+# Blazing Fast, feather light markdown reader (with edit capabilities) 
+## stop using some bloated, clunky-ass markdown reader that takes forever to load and some even want your money. Do yourself a favor, get it set up as your default .md reader. Anytime you click on a markdown file, you will experience bliss.  
+A small Windows Markdown editor. Documents open rendered and editable; **Rendered / Source** switches to editable Markdown. One document per window, ordinary files, no account or library. This is Windows only, however if there is any demand for it, I will take that on. Just leave a "issue" in the issue section of this repo. 
 
 ## Try the prototype
 
