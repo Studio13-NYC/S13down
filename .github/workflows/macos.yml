@@ -30,7 +30,13 @@ jobs:
       - run: npm ci
       - run: npx playwright install chromium webkit
       - run: npm test
-      - run: npm run test:ui
+      - run: npm run test:ui -- --max-failures=2
+      - name: Keep browser failure details
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-browser-failure-details
+          path: test-results/
       - run: cargo test --locked --manifest-path src-tauri/Cargo.toml
       - name: Build universal Mac app and disk image
         run: npm run tauri -- build --target universal-apple-darwin
