@@ -96,7 +96,7 @@ fn next_open_request(state: tauri::State<'_, AppState>) -> Result<Option<String>
 }
 
 #[tauri::command]
-fn open_document_window(app: tauri::AppHandle, state: tauri::State<'_, AppState>, path: String) -> Result<(), String> {
+async fn open_document_window(app: tauri::AppHandle, state: tauri::State<'_, AppState>, path: String) -> Result<(), String> {
     let label = {
         let mut docs = state.0.lock().map_err(|e| e.to_string())?;
         docs.next_window += 1;

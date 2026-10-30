@@ -48,3 +48,6 @@ jobs:
           path: |
             S13down-mac-universal.app.zip
             src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+            docs/MAC-QA.md
+            tests/fixtures/macos-qa.md
+            tests/fixtures/macos-second.markdown
