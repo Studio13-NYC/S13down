@@ -2,15 +2,28 @@
 # Blazing Fast, Feather Light markdown reader (with edit capabilities) 
 ## stop using some bloated, clunky-ass markdown reader that takes forever to load and some even want your money. Do yourself a favor, get it set up as your default .md reader. Anytime you click on a markdown file, you will experience bliss.  
 
-A small Markdown editor. Documents open rendered and editable; **Rendered / Source** switches to editable Markdown. One document per window, ordinary files, no account or library. Windows has a locally built prototype; macOS has a universal test build awaiting user QA (see [Mac build and verification](docs/MACOS.md)).
+A small Markdown editor for Windows and macOS. Documents open readable and editable; **Rendered / Source** switches to editable Markdown. One document per window, ordinary files, no account or library.
 
-## Try the prototype
+## Download the alpha
 
-- Run `builds\S13down.exe` directly, or install `builds\S13down_0.1.0_x64-setup.exe`.
+**[v0.1.0-alpha.1 — downloads and release notes](https://github.com/Studio13-NYC/S13down/releases/tag/v0.1.0-alpha.1)**
+
+| Platform | Download |
+|---|---|
+| Windows x64 — installer | [S13down setup](https://github.com/Studio13-NYC/S13down/releases/download/v0.1.0-alpha.1/S13down_0.1.0-alpha.1_x64-setup.exe) |
+| Windows x64 — standalone executable | [S13down.exe](https://github.com/Studio13-NYC/S13down/releases/download/v0.1.0-alpha.1/S13down.exe) |
+| macOS 13+ — Apple Silicon and Intel | [Universal DMG](https://github.com/Studio13-NYC/S13down/releases/download/v0.1.0-alpha.1/S13down_0.1.0-alpha.1_universal.dmg) |
+| macOS — alternative app download | [Zipped S13down.app](https://github.com/Studio13-NYC/S13down/releases/download/v0.1.0-alpha.1/S13down_0.1.0-alpha.1_universal.app.zip) |
+
+This is an **alpha**, intended for testing with copies of your documents. Windows binaries are unsigned; macOS uses an ad-hoc signature and is not Apple-notarized. macOS native user QA is still pending. [Mac installation and QA checklist](docs/MAC-QA.md) · [Report a problem](https://github.com/Studio13-NYC/S13down/issues).
+
+## Install and open files
+
+- **Windows:** run the installer, or run `S13down.exe` directly.
 - Requires Windows with Microsoft Edge WebView2. The installer can bootstrap WebView2 if it is missing.
 - To make it your default: install, then right-click an `.md` file → **Open with** → **Choose another app** → **S13down** → **Always**. Installation registers `.md` and `.markdown`; the app does not change your default automatically.
-- You can also pass a filename: `& .\builds\S13down.exe 'D:\Notes\My document.md'`.
-- This is a locally built, unsigned prototype. Installer/default-app registration still needs a user installation check.
+- You can also pass a filename: `& .\S13down.exe 'D:\Notes\My document.md'`.
+- **Mac:** open the DMG and drag S13down into Applications. For the first-launch prompt, follow the [Mac installation instructions](docs/MAC-QA.md). Set the default through Finder → Get Info → Open with → S13down → Change All.
 
 ## Controls
 
@@ -54,7 +67,7 @@ npm run tauri -- dev
 npm run tauri -- build
 ```
 
-Build output: `src-tauri\target\release\S13down.exe` and `src-tauri\target\release\bundle\nsis\S13down_0.1.0_x64-setup.exe`. `builds` contains review copies of those artifacts. Tests use fixture copies, not personal documents. UI tests use Edge on Windows (Chromium elsewhere) and Playwright WebKit. Install both engines with `npx playwright install chromium webkit` on a Mac.
+Build output: `src-tauri\target\release\S13down.exe` and `src-tauri\target\release\bundle\nsis\S13down_0.1.0-alpha.1_x64-setup.exe`. `builds` contains local review/release copies; public binaries are attached to GitHub Releases. Tests use fixture copies, not personal documents. UI tests use Edge on Windows (Chromium elsewhere) and Playwright WebKit. Install both engines with `npx playwright install chromium webkit` on a Mac. See [release procedure](docs/RELEASING.md) and [Mac build details](docs/MACOS.md).
 
 Stack: Tauri 2, TypeScript/Vite, Milkdown Crepe, CodeMirror 6. The implementation is independent of Typora code. See `docs/DESIGN.md` for the original direction and `docs/IMPLEMENTATION.md` for decisions.
 

@@ -1,5 +1,7 @@
 # Native macOS prototype
 
+The current public version is [v0.1.0-alpha.1](https://github.com/Studio13-NYC/S13down/releases/tag/v0.1.0-alpha.1), with binaries built alongside Windows from the same source revision. See the release page for downloads and the [QA checklist](MAC-QA.md) for installation and testing. The original pre-alpha build record below is retained for provenance.
+
 Status: universal Mac test build completed successfully on October 30, 2026 from commit `8f9d676281dbd6de83502a7e6deae4477e872ca3` on `codex/macos-port`. [Successful build and artifacts](https://github.com/Studio13-NYC/S13down/actions/runs/41091303124). The existing Windows review executable is unchanged. Source lives at `D:\Studio13\Lab\Code\S13down` on the development PC. Real-Mac QA will be performed by Mac testers using [the supplied checklist](MAC-QA.md).
 
 The downloaded test kit is saved locally as `D:\Studio13\Lab\Code\S13down\builds\mac\S13down-mac-test-8f9d676.zip`. It contains the DMG, zipped app, sample documents, QA instructions, build identity and SHA-256 checksums. This is a review artifact, not a published GitHub release.
@@ -15,7 +17,7 @@ The downloaded test kit is saved locally as `D:\Studio13\Lab\Code\S13down\builds
 
 ## Build on a Mac
 
-Install Xcode Command Line Tools (`xcode-select --install`), Node 24/npm, and Rust stable through rustup. From a checkout of this branch:
+Install Xcode Command Line Tools (`xcode-select --install`), Node 24/npm, and Rust stable through rustup. From a checkout of `main` or a release tag:
 
 ```sh
 npm ci
@@ -32,7 +34,7 @@ Expected outputs:
 - `src-tauri/target/universal-apple-darwin/release/bundle/macos/S13down.app`
 - `src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg`
 
-`.github/workflows/macos.yml` runs the same build on a GitHub macOS 26 runner, verifies both architectures and the ad-hoc signature, and uploads a DMG, zipped app, QA checklist and sample files as workflow artifacts. It does not create a release. On October 30, 2026, Nick explicitly approved pushing the branch and running the build in the now-public `Studio13-NYC/S13down` repository. The branch and build artifacts are public.
+`.github/workflows/build.yml` builds Windows x64 and macOS on GitHub runners, verifies both Mac architectures and the ad-hoc signature, and uploads binary artifacts. Release publication is a separate step described in [RELEASING.md](RELEASING.md). On October 30, 2026, Nick explicitly approved public builds and alpha release publication in `Studio13-NYC/S13down`.
 
 The prototype configuration uses ad-hoc signing (`signingIdentity: "-"`), not Apple Developer ID signing or notarization. It is for review, not a frictionless public installer. A distributable release needs a Developer ID identity and notarization configured separately. See [Tauri's signing documentation](https://v2.tauri.app/distribute/sign/macos/).
 

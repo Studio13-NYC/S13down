@@ -1,6 +1,6 @@
 [package]
 name = "plainmarkdown"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 description = "A quiet Markdown editor for Windows and macOS"
 authors = ["Studio13"]
 edition = "2021"
