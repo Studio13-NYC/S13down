@@ -15,6 +15,8 @@ import '@milkdown/crepe/theme/frame.css';
 import './style.css';
 
 const native = isTauri();
+const mac = /Mac/.test(navigator.platform);
+const modifier = mac ? 'Cmd' : 'Ctrl';
 const welcome = '# A little room to think.\n\nA plain file. A clear page. Just start writing.\n\n## Make yourself at home\n\nClick any text to edit it. Use **Ctrl+B** for bold and **Ctrl+I** for italic. Markdown shortcuts work as you type.\n\n- Open a document with **Ctrl+O**\n- Save your work with **Ctrl+S**\n- Switch to Markdown source with **Ctrl+/**\n\n> Everything stays in ordinary Markdown files, on your computer.\n\nTry the **Source** switch above to see the text behind this page.\n';
 document.querySelector('#app')!.innerHTML = `
   <header><div class="identity"><span class="app-mark" aria-hidden="true">M</span><div><div id="filename">Untitled.md</div><div id="file-state">S13down</div></div></div>
@@ -26,8 +28,13 @@ document.querySelector('#app')!.innerHTML = `
   <dialog id="question"><form method="dialog"><h2 id="question-title"></h2><p id="question-body"></p><div id="question-buttons"></div></form></dialog>
   <input type="file" id="file-input" accept=".md,.markdown,.txt" hidden>`;
 
+// Shortcut labels follow the host; the document itself stays ordinary Markdown.
+for (const item of document.querySelectorAll<HTMLElement>('[title], kbd')) {
+  if (item.title) item.title = item.title.replaceAll('Ctrl', modifier);
+  if (item.tagName === 'KBD') item.textContent = item.textContent!.replaceAll('Ctrl', modifier);
+}
 const el = <T extends HTMLElement = HTMLElement>(id:string) => document.getElementById(id) as T;
-let doc = new DocumentSession(welcome);
+let doc = new DocumentSession(welcome.replaceAll('Ctrl', modifier));
 let path = '';
 let mode: 'rendered'|'source' = 'rendered';
 let rich: Crepe;
@@ -43,6 +50,28 @@ let zoom = 1;
 let timer: ReturnType<typeof setTimeout>;
 let recoveryKey = `plainmarkdown-draft-${crypto.randomUUID()}`;
 let recoveryFailed = false;
+let started = false;
+let drainingFiles = false;
+
+async function handleFileRequests() {
+  if (!native || !started || busy || composing || drainingFiles || el<HTMLDialogElement>('question').open) return;
+  drainingFiles = true;
+  try {
+    await run(async () => {
+      let requestedPath: string | null;
+      while ((requestedPath = await invoke<string|null>('next_open_request')) !== null) {
+        flush();
+        // Reuse the untouched welcome page. Never replace an existing file or draft.
+        if (!path && !doc.dirty) {
+          const result = await invoke<{text:string,path:string}|null>('open_document', {initial:false,requestedPath});
+          if (result) await load(result.text,result.path);
+        } else {
+          await invoke('open_document_window', {path:requestedPath});
+        }
+      }
+    });
+  } finally { drainingFiles = false; }
+}
 
 function message(text:string, error=false) {
   el('notice').textContent = text; el('notice').hidden = !text;
@@ -172,13 +201,14 @@ async function run(action:()=>Promise<unknown>) {
   if(busy || composing || el<HTMLDialogElement>('question').open) return;
   busy=true;
   el('page').inert=true;
-  try {await action();} catch(error) {message(String(error),true);el('status').textContent='Could not complete action';} finally {busy=false;el('page').inert=false;if(pendingSearch){pendingSearch=false;pendingFocus=false;openSearchPanel(code);}else if(pendingFocus){pendingFocus=false;focusEditor();}}
+  try {await action();} catch(error) {message(String(error),true);el('status').textContent='Could not complete action';} finally {busy=false;el('page').inert=false;if(pendingSearch){pendingSearch=false;pendingFocus=false;openSearchPanel(code);}else if(pendingFocus){pendingFocus=false;focusEditor();}void handleFileRequests();}
 }
 async function undo(redo=false) {
   flush(); if(redo ? doc.redo() : doc.undo()) {await showMode(mode,true); recoverable();}
 }
 function setZoom(value:number) {zoom=Math.min(1.6,Math.max(0.75,value));document.documentElement.style.setProperty('--zoom',String(zoom));}
 async function find() {await showMode('source');pendingSearch=true;}
+const actions:Record<string,()=>Promise<unknown>>={new:newDocument,open:()=>open(),save:()=>save(false),saveas:()=>save(true),undo:()=>undo(),redo:()=>undo(true),mode:()=>showMode(mode==='rendered'?'source':'rendered'),find,zoomin:async()=>setZoom(zoom+0.1),zoomout:async()=>setZoom(zoom-0.1),zoomreset:async()=>setZoom(1)};
 
 el('rendered').onclick=()=>void run(()=>showMode('rendered'));
 el('source').onclick=()=>void run(()=>showMode('source'));
@@ -189,7 +219,6 @@ document.addEventListener('click',event=>{if(!(event.target as HTMLElement).clos
 el('menu').onclick=event=> {
   const action=(event.target as HTMLElement).closest('button')?.dataset.action; if(!action)return;
   el('menu').hidden=true;el('more').setAttribute('aria-expanded','false');
-  const actions:Record<string,()=>Promise<unknown>>={new:newDocument,saveas:()=>save(true),find,zoomin:async()=>setZoom(zoom+0.1),zoomout:async()=>setZoom(zoom-0.1),zoomreset:async()=>setZoom(1)};
   void run(actions[action]);
 };
 el('file-input').addEventListener('change',()=>void run(async()=> {
@@ -197,9 +226,9 @@ el('file-input').addEventListener('change',()=>void run(async()=> {
   if(file) await load(await file.text(),file.name); input.value='';
 }));
 document.addEventListener('compositionstart',()=>{composing=true;});
-document.addEventListener('compositionend',()=>{composing=false;changed();});
+document.addEventListener('compositionend',()=>{composing=false;changed();void handleFileRequests();});
 document.addEventListener('keydown',event=> {
-  if(!(event.ctrlKey||event.metaKey)||event.isComposing||el<HTMLDialogElement>('question').open)return;
+  if(!(mac ? event.metaKey : event.ctrlKey)||event.altKey||event.isComposing||el<HTMLDialogElement>('question').open)return;
   const key=event.key.toLowerCase();
   const action=key==='s'?()=>save(event.shiftKey):key==='o'?()=>open():key==='n'?newDocument:key==='/'?()=>showMode(mode==='rendered'?'source':'rendered'):key==='z'?()=>undo(event.shiftKey):key==='y'?()=>undo(true):key==='f'?find:key==='='||key==='+'?async()=>setZoom(zoom+0.1):key==='-'?async()=>setZoom(zoom-0.1):key==='0'?async()=>setZoom(1):null;
   if(action) {event.preventDefault();event.stopImmediatePropagation();void run(action);}
@@ -210,6 +239,12 @@ window.addEventListener('beforeunload',()=>flush());
 
 async function start() {
   await createEditor();
+  if(native) {
+    await getCurrentWindow().listen('files-opened',()=>void handleFileRequests());
+    await getCurrentWindow().listen<string>('menu-action',event=> {
+      if(started && actions[event.payload]) void run(actions[event.payload]);
+    });
+  }
   if(native) await getCurrentWindow().onCloseRequested(async event=> {
     event.preventDefault();
     await run(async()=>{if(await canLeave()) {localStorage.removeItem(recoveryKey);await getCurrentWindow().destroy();}});
@@ -219,6 +254,8 @@ async function start() {
     try {const value=JSON.parse(localStorage.getItem(key)!);return typeof value.text==='string' ? [{...value,key}] : [];} catch{return [];}
   }).sort((a,b)=>b.time-a.time);
   await open(true);
+  started=true;
+  await handleFileRequests();
   if(drafts.length && !path) {
     const draft=drafts[0];
     const result=await ask('Recover a draft?',`An unsaved draft is available${draft.path ? ` from ${draft.path}` : ''}. Recover it as a new document.`,[{label:'Later',value:'later'},{label:'Recover copy',value:'recover'}]);
@@ -227,4 +264,4 @@ async function start() {
     }
   }
 }
-void start().catch(error=>message(String(error),true));
+void start().catch(error=>message(String(error),true)).finally(()=>{started=true;void handleFileRequests();});

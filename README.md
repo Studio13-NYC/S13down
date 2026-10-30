@@ -2,7 +2,7 @@
 # Blazing Fast, Feather Light markdown reader (with edit capabilities) 
 ## stop using some bloated, clunky-ass markdown reader that takes forever to load and some even want your money. Do yourself a favor, get it set up as your default .md reader. Anytime you click on a markdown file, you will experience bliss.  
 
-A small Windows Markdown editor. Documents open rendered and editable; **Rendered / Source** switches to editable Markdown. One document per window, ordinary files, no account or library. This is Windows only, however if there is any demand for it, I will take that on. Just leave a "issue" in the issue section of this repo. 
+A small Markdown editor. Documents open rendered and editable; **Rendered / Source** switches to editable Markdown. One document per window, ordinary files, no account or library. Windows has a locally built prototype; macOS has a universal test build awaiting user QA (see [Mac build and verification](docs/MACOS.md)).
 
 ## Try the prototype
 
@@ -26,6 +26,8 @@ A small Windows Markdown editor. Documents open rendered and editable; **Rendere
 
 Supports headings, paragraphs, lists, tasks, block quotes, links, fenced code, tables and images. Appearance follows Windows light/dark preference. A source fallback preserves front matter, HTML/comments, footnotes, directives and math that this prototype does not render.
 
+On macOS, shortcuts use **Command** instead of Ctrl (redo: Command+Shift+Z). The Mac port adds native File/Edit/View menus, Finder document opening, and the system font and light/dark appearance.
+
 ## File behavior and limits
 
 - UTF-8, with or without BOM; documents up to 10 MB. Other encodings are rejected.
@@ -35,7 +37,7 @@ Supports headings, paragraphs, lists, tasks, block quotes, links, fenced code, t
 - Undo groups nearby typing and keeps up to 150 document snapshots. It spans mode switches. Caret positions are approximate after undo and across modes; exact selections are not mapped.
 - Relative images must be inside the saved document's folder or a subfolder, up to 15 MB. HTTPS images need a connection. Uploads under 2 MB are embedded as durable data URLs, making the Markdown file larger. Larger images should be linked by relative path in Source.
 - Links are editable but do not open a browser from the document. Find switches to Source. No tabs, file library, export, math/diagrams or plugins.
-- Automated UI tests cover Edge; native Windows smoke checks are recorded in `docs/VERIFICATION.md`. IME, all Windows scaling settings, accessibility tooling and large-document performance still need broader testing.
+- Automated UI tests cover Edge/Chromium and WebKit; native Windows smoke checks for the original prototype are recorded in `docs/VERIFICATION.md`. Mac native checks are still pending in `docs/MACOS.md`. IME, scaling settings, accessibility tooling and large-document performance still need broader testing.
 
 ## Build and test
 
@@ -45,13 +47,14 @@ Prerequisites: Node/npm, Rust stable MSVC, Visual Studio C++ build tools and Web
 Set-Location 'D:\Studio13\Lab\Code\S13down'
 npm ci
 npm test
+npx playwright install webkit
 npm run test:ui
 cargo test --manifest-path src-tauri\Cargo.toml
 npm run tauri -- dev
 npm run tauri -- build
 ```
 
-Build output: `src-tauri\target\release\S13down.exe` and `src-tauri\target\release\bundle\nsis\S13down_0.1.0_x64-setup.exe`. `builds` contains review copies of those artifacts. Tests use fixture copies, not personal documents. UI tests use installed Edge.
+Build output: `src-tauri\target\release\S13down.exe` and `src-tauri\target\release\bundle\nsis\S13down_0.1.0_x64-setup.exe`. `builds` contains review copies of those artifacts. Tests use fixture copies, not personal documents. UI tests use Edge on Windows (Chromium elsewhere) and Playwright WebKit. Install both engines with `npx playwright install chromium webkit` on a Mac.
 
 Stack: Tauri 2, TypeScript/Vite, Milkdown Crepe, CodeMirror 6. The implementation is independent of Typora code. See `docs/DESIGN.md` for the original direction and `docs/IMPLEMENTATION.md` for decisions.
 

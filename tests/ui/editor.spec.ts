@@ -26,7 +26,7 @@ test('rich edit reaches source immediately, and undo works across modes', async 
   await page.locator('#code .cm-content').fill('Changed in source');
   await page.getByRole('button',{name:'Rendered',exact:true}).click();
   await expect(page.locator('.ProseMirror')).toContainText('Changed in source');
-  await page.keyboard.press('Control+z');
+  await page.keyboard.press('ControlOrMeta+z');
   await expect(page.locator('.ProseMirror')).toContainText('A quiet editor');
   await expect(page.locator('.ProseMirror')).toBeFocused();
 });
@@ -43,7 +43,7 @@ test('unsupported Markdown remains intact and shows a clear source fallback', as
 test('canceling a new document preserves edits and a recovery copy survives reload', async ({page}) => {
   await page.goto('/');
   await page.locator('.ProseMirror').fill('Keep this draft');
-  await page.keyboard.press('Control+n');
+  await page.keyboard.press('ControlOrMeta+n');
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.getByRole('button',{name:'Cancel',exact:true}).click();
   await expect(page.locator('.ProseMirror')).toHaveText('Keep this draft');
@@ -74,7 +74,7 @@ test('source edits keep Windows line endings', async ({page}) => {
   await page.goto('/');
   await page.locator('#file-input').setInputFiles({name:'Windows.md',mimeType:'text/markdown',buffer:Buffer.from('# Heading\r\n\r\nBody\r\n')});
   await page.getByRole('button',{name:'Source',exact:true}).click();
-  await page.keyboard.press('Control+End');
+  await page.keyboard.press(process.platform==='darwin'?'Meta+ArrowDown':'Control+End');
   await page.keyboard.type('X');
   const downloadPromise=page.waitForEvent('download');
   await page.getByRole('button',{name:'Save',exact:true}).click();
@@ -93,6 +93,6 @@ test('image uploads produce durable Markdown and find receives keyboard focus', 
   await (await chooser).setFiles({name:'pixel.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=','base64')});
   await page.getByRole('button',{name:'Source',exact:true}).click();
   await expect(page.locator('#code .cm-content')).toContainText('data:image/png;base64,');
-  await page.keyboard.press('Control+f');
+  await page.keyboard.press('ControlOrMeta+f');
   await expect(page.getByPlaceholder('Find')).toBeFocused();
 });
