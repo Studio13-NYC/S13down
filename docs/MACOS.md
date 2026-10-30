@@ -1,6 +1,8 @@
 # Native macOS prototype
 
-Status: port implemented locally on `codex/macos-port`; no Mac binary has been built or tested yet. The existing Windows review executable is unchanged. Source lives at `D:\Studio13\Lab\Code\S13down` on the development PC.
+Status: universal Mac test build completed successfully on October 30, 2026 from commit `8f9d676281dbd6de83502a7e6deae4477e872ca3` on `codex/macos-port`. [Successful build and artifacts](https://github.com/Studio13-NYC/S13down/actions/runs/41091303124). The existing Windows review executable is unchanged. Source lives at `D:\Studio13\Lab\Code\S13down` on the development PC. Real-Mac QA will be performed by Mac testers using [the supplied checklist](MAC-QA.md).
+
+The downloaded test kit is saved locally as `D:\Studio13\Lab\Code\S13down\builds\mac\S13down-mac-test-8f9d676.zip`. It contains the DMG, zipped app, sample documents, QA instructions, build identity and SHA-256 checksums. This is a review artifact, not a published GitHub release.
 
 ## What changes
 
@@ -30,7 +32,7 @@ Expected outputs:
 - `src-tauri/target/universal-apple-darwin/release/bundle/macos/S13down.app`
 - `src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg`
 
-`.github/workflows/macos.yml` prepares the same build on a GitHub Mac runner, verifies both architectures and the ad-hoc signature, and uploads a DMG and zipped app as workflow artifacts. It does not create a release. The workflow is not yet pushed or run. Live repository inspection on October 30, 2026 found `Studio13-NYC/S13down` public, unlike the original private setup. Do not assume a branch or its build artifacts are private.
+`.github/workflows/macos.yml` runs the same build on a GitHub macOS 26 runner, verifies both architectures and the ad-hoc signature, and uploads a DMG, zipped app, QA checklist and sample files as workflow artifacts. It does not create a release. On October 30, 2026, Nick explicitly approved pushing the branch and running the build in the now-public `Studio13-NYC/S13down` repository. The branch and build artifacts are public.
 
 The prototype configuration uses ad-hoc signing (`signingIdentity: "-"`), not Apple Developer ID signing or notarization. It is for review, not a frictionless public installer. A distributable release needs a Developer ID identity and notarization configured separately. See [Tauri's signing documentation](https://v2.tauri.app/distribute/sign/macos/).
 
@@ -45,8 +47,12 @@ Verified locally on October 30, 2026:
 - `npm run build` passed (existing large-bundle warning remains).
 - `npm test`: 10 passed.
 - `npm run test:ui`: 20 passed across Edge and WebKit.
-- `cargo test --locked --manifest-path src-tauri\Cargo.toml --target-dir src-tauri\target\macos-port-check`: 5 passed on Windows. The separate target directory avoids stale build-cache paths from the earlier `PlainMarkdown` folder name. The Unix-only permissions test and macOS-only menu/event module still need the Mac runner.
+- `cargo test --locked --manifest-path src-tauri\Cargo.toml --target-dir src-tauri\target\macos-port-check`: 5 passed on Windows. The separate target directory avoids stale build-cache paths from the earlier `PlainMarkdown` folder name. The Unix-only permissions test and macOS-only menu/event module were checked separately on the Mac runner.
 - `git diff --check` passed. Existing untracked `examples/demo.md` and `videos/` were preserved.
+
+On the hosted macOS 26 runner: 10 document tests, all 20 browser tests, and 6 Rust tests passed, including Unix permission preservation. The native macOS menu/event module compiled successfully. Both release architectures compiled; `lipo -verify_arch arm64 x86_64`, `plutil -lint` and `codesign --verify --deep --strict` passed. The resulting DMG is 7,877,382 bytes; the zipped app is 7,849,715 bytes. These checks do not verify interactive Finder, menu or native-dialog behavior.
+
+An earlier macOS 14 runner could not initialize Playwright's frozen WebKit browser (`Unknown setting: PushAPIEnabled`), before any app test ran in WebKit. The runner was moved to macOS 26; no tests were skipped. See [the upstream Playwright issue](https://github.com/microsoft/playwright/issues/42964). Running this browser suite locally requires a macOS version supported by the installed Playwright version, separate from the app's minimum OS target.
 
 Required packaged-app checks on a Mac:
 

@@ -1,6 +1,6 @@
 # S13down
 
-A small Markdown editor. Documents open rendered and editable; **Rendered / Source** switches to editable Markdown. One document per window, ordinary files, no account or library. Windows has a locally built prototype; the native macOS port is in progress (see [Mac build and verification](docs/MACOS.md)).
+A small Markdown editor. Documents open rendered and editable; **Rendered / Source** switches to editable Markdown. One document per window, ordinary files, no account or library. Windows has a locally built prototype; macOS has a universal test build awaiting user QA (see [Mac build and verification](docs/MACOS.md)).
 
 ## Try the prototype
 
