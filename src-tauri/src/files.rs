@@ -33,6 +33,10 @@ pub fn atomic_write(path: &Path, bytes: &[u8]) -> Result<(), String> {
     }
     let parent = path.parent().ok_or("The file has no parent folder.")?;
     let mut temp = tempfile::NamedTempFile::new_in(parent).map_err(|e| e.to_string())?;
+    #[cfg(unix)]
+    if path.exists() {
+        temp.as_file().set_permissions(fs::metadata(path).map_err(|e| e.to_string())?.permissions()).map_err(|e| e.to_string())?;
+    }
     temp.write_all(bytes).and_then(|_| temp.as_file().sync_all()).map_err(|e| e.to_string())?;
     temp.persist(path).map_err(|e| e.to_string())?;
     Ok(())
@@ -41,6 +45,15 @@ pub fn atomic_write(path: &Path, bytes: &[u8]) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(unix)]
+    #[test] fn save_preserves_unix_permissions() {
+        use std::os::unix::fs::PermissionsExt;
+        let dir = tempfile::tempdir().unwrap(); let path = dir.path().join("notes.md");
+        fs::write(&path, "old").unwrap();
+        fs::set_permissions(&path, fs::Permissions::from_mode(0o640)).unwrap();
+        let (mut doc, _) = FileDocument::open(&path).unwrap(); doc.save("new").unwrap();
+        assert_eq!(fs::metadata(path).unwrap().permissions().mode() & 0o777, 0o640);
+    }
     #[test] fn preserves_bom_crlf_and_final_newline_on_no_edit_save() {
         let dir = tempfile::tempdir().unwrap(); let path = dir.path().join("日本語 notes.md");
         let original = b"\xef\xbb\xbf# Title\r\n\r\n* item";
